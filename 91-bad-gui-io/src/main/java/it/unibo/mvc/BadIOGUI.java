@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.List;
+import java.nio.file.Path;
 import java.util.Random;
 
 /**
@@ -43,9 +43,15 @@ public class BadIOGUI {
         final JPanel canvas = new JPanel();
         canvas.setLayout(new BorderLayout());
         final JButton write = new JButton("Write on file");
-        canvas.add(write, BorderLayout.CENTER);
         frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        final JPanel genericPanel = new JPanel();
+        genericPanel.setLayout(new BoxLayout(genericPanel, BoxLayout.X_AXIS));
+        canvas.add(genericPanel, BorderLayout.CENTER);
+        genericPanel.add(write);
+        final JButton read = new JButton("Read from file");
+        genericPanel.add(read);
+
         /*
          * Handlers
          */
@@ -61,6 +67,18 @@ public class BadIOGUI {
                  */
                 try (PrintStream ps = new PrintStream(PATH, StandardCharsets.UTF_8)) {
                     ps.print(randomGenerator.nextInt());
+                } catch (final IOException e) {
+                    JOptionPane.showMessageDialog(frame, e, "Error", JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace(); // NOPMD: allowed as this is just an exercise
+                }
+            }
+        });
+
+        read.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent ignored) {
+                try {
+                    System.out.println(Files.readAllLines(Path.of(PATH), StandardCharsets.UTF_8)); // NOPMD
                 } catch (final IOException e) {
                     JOptionPane.showMessageDialog(frame, e, "Error", JOptionPane.ERROR_MESSAGE);
                     e.printStackTrace(); // NOPMD: allowed as this is just an exercise
@@ -83,6 +101,10 @@ public class BadIOGUI {
         final int sh = (int) screen.getHeight();
         frame.setSize(sw / PROPORTION, sh / PROPORTION);
         /*
+         * Frame Packing for resizing the frame to the minimum size
+         */
+        frame.pack();
+        /*
          * Instead of appearing at (0,0), upper left corner of the screen, this
          * flag makes the OS window manager take care of the default positioning
          * on screen. Results may vary, but it is generally the best choice.
@@ -100,6 +122,6 @@ public class BadIOGUI {
      * @param args ignored
      */
     public static void main(final String... args) {
-       new BadIOGUI().display();
+        new BadIOGUI().display();
     }
 }
