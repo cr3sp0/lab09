@@ -18,11 +18,13 @@ import java.io.IOException;
  * 
  */
 public final class SimpleGUI {
-
-    private final JFrame frame = new JFrame();
     private static final int PROPORTION = 5;
     private static final int TEXTAREADIMENSION = 7;
+    private final JFrame frame = new JFrame();
 
+    /**
+     * Construct a new {@code SimpleGUI}.
+     */
     public SimpleGUI() {
         final JPanel canvas = new JPanel();
         canvas.setLayout(new BorderLayout());
@@ -39,11 +41,11 @@ public final class SimpleGUI {
         saveButton.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent ingored) {
+            public void actionPerformed(final ActionEvent ingored) {
                 final Controller controllerFile = new Controller();
                 try {
                     controllerFile.writeOnFile(writingSpace.getText());
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace(); // NOPMD
                 }
             }
